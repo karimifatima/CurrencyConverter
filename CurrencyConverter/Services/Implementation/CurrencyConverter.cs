@@ -17,13 +17,13 @@ namespace CurrencyConverter.Services.Implementation
 
         public double Convert(string fromCurrency, string toCurrency, double amount)
         {
-            var path = CurrencyGraph.FindPath(fromCurrency, toCurrency).ToArray();
+            var path = CurrencyGraph.FindPath(fromCurrency, toCurrency);
 
             if (path == null)
                 throw new ApplicationException("Can not convert");
 
             double conversionRate = 1;
-            for (int i = 0; path.Length - 1 > i; i++)
+            for (int i = 0; path.Count - 1 > i; i++)
             {
                 Node from = path[i];
                 Node to = path[i + 1];

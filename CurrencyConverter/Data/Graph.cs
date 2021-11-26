@@ -21,16 +21,24 @@ namespace CurrencyConverter.Data
 
         public List<Node> FindPath(string start, string end)
         {
-            var sourceId = FindOrCreateNode(start).Id;
-            var destId = FindOrCreateNode(end).Id;
+            var sourceNode = FindNode(start);
+            var destNode = FindNode(end);
+
+            if (sourceNode == null || destNode == null)
+            {
+                return null;
+            }
+
+            var sourceId = sourceNode.Id;
+            var destId = destNode.Id;
 
             var Path = BFS(sourceId, destId);
-            if (Path.Count==0)
+            if (Path.Count == 0)
             {
                 System.Diagnostics.Debug.WriteLine("Given source and destination are not connected");
                 return null;
             }
-                        
+
             System.Diagnostics.Debug.WriteLine("Shortest path length is: " + Path.Count);
 
             System.Diagnostics.Debug.WriteLine("Path is ::");
@@ -79,14 +87,14 @@ namespace CurrencyConverter.Data
                         queue.Add(destId);
 
                         if (destId == target)
-                            return CreateNodePath(target,predecessors);
+                            return CreateNodePath(target, predecessors);
                     }
                 }
             }
             return new List<Node>();
         }
 
-        private List<Node> CreateNodePath(int targetId, int[] predecessors)
+        List<Node> CreateNodePath(int targetId, int[] predecessors)
         {
             List<Node> path = new List<Node>();
             int crawl = targetId;
@@ -103,18 +111,24 @@ namespace CurrencyConverter.Data
 
         Node FindOrCreateNode(string Title)
         {
-            Node result;
-            if (NodesTitleIndex.ContainsKey(Title))
-            {
-                result = NodesTitleIndex[Title];
-            }
-            else
+            Node result = FindNode(Title);
+            if (result == null)
             {
                 result = new Node { Id = NodesTitleIndex.Count, Title = Title };
                 NodesIdIndex.Add(result.Id, result);
                 NodesTitleIndex.Add(result.Title, result);
             }
             return result;
+        }
+
+        Node FindNode(string Title)
+        {
+            if (NodesTitleIndex.ContainsKey(Title))
+            {
+                return NodesTitleIndex[Title];
+            }
+            else
+                return null;
         }
 
     }
